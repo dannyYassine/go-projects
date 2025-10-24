@@ -12,7 +12,7 @@ func NewCreateTodoUseCase() *CreateTodoUseCase {
 	}
 }
 
-func (useCase *CreateTodoUseCase) Execute(dto CreateTodoDto) (*Todo, error) {
+func (useCase *CreateTodoUseCase) Execute(dto *CreateTodoDto) (*Todo, error) {
 	todo := &Todo{Name: dto.Name}
 
 	savedTodo, err := useCase.todoRepository.createTodo(todo)

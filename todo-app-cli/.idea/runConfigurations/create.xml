@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="create" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="todo-app-cli" />
+    <working_directory value="$PROJECT_DIR$" />
+    <parameters value="create" />
+    <kind value="PACKAGE" />
+    <package value="todo-app-cli" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$/main.go" />
+    <method v="2" />
+  </configuration>
+</component>

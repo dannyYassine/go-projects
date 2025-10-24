@@ -4,7 +4,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/google/uuid"
 )
@@ -20,23 +22,35 @@ func NewTodoCsvRepository() *TodoCsvRepository {
 }
 
 func (t TodoCsvRepository) createTodo(todo *Todo) (*Todo, error) {
-	w := csv.NewWriter(os.Stdout)
+	filePath := filepath.Join("app", "todo.csv")
+
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatalf("failed to create file: %v", err)
+	}
+
+	defer func() {
+		file.Close()
+	}()
+
+	w := csv.NewWriter(file)
 
 	id := uuid.NewString()
+	todo.Id = id
 
 	todoCsv := t.mapper.toRecord(todo)
 
 	if err := w.Write(todoCsv); err != nil {
+		todo.Id = ""
 		return nil, err
 	}
 
 	w.Flush()
 
 	if err := w.Error(); err != nil {
+		todo.Id = ""
 		return nil, err
 	}
-
-	todo.Id = id
 
 	return todo, nil
 }

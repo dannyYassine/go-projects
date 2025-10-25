@@ -13,7 +13,7 @@ func NewDeleteTodoUseCase(repositoryInterface TodoRepositoryInterface) *DeleteTo
 }
 
 func (useCase *DeleteTodoUseCase) Execute(dto *DeleteTodoDto) error {
-	err := useCase.todoRepository.deleteTodo(dto.Id)
+	err := useCase.todoRepository.DeleteTodo(dto.Id)
 
 	if err != nil {
 		return fmt.Errorf("could not get todos: %w", err)

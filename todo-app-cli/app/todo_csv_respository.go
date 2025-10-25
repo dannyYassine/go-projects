@@ -25,8 +25,49 @@ func NewTodoCsvRepository() *TodoCsvRepository {
 	}
 }
 
-func (t TodoCsvRepository) createTodo(todo *Todo) (*Todo, error) {
-	filePath := filepath.Join("app", "todo.csv")
+// getCsvFilePath returns the absolute path to the CSV file used for storing todos.
+// It searches upward from the current working directory for a folder that contains
+// "app/todo.csv" to ensure we always resolve to the repository's app/todo.csv
+// even when tests are executed from nested directories like app/test.
+func getCsvFilePath() (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("failed to get current working directory: %w", err)
+	}
+
+	// Walk up the directory tree until we find an "app/todo.csv" that exists.
+	dir := cwd
+	for {
+		candidate := filepath.Join(dir, "app", "todo.csv")
+		if _, statErr := os.Stat(candidate); statErr == nil {
+			return candidate, nil
+		}
+
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break // reached filesystem root
+		}
+		dir = parent
+	}
+
+	// As a fallback, if we're already inside the app directory, prefer a local todo.csv.
+	// This supports running the binary from within the app folder.
+	localCandidate := filepath.Join(cwd, "todo.csv")
+	if _, statErr := os.Stat(localCandidate); statErr == nil {
+		abs, abserr := filepath.Abs(localCandidate)
+		if abserr == nil {
+			return abs, nil
+		}
+	}
+
+	return "", fmt.Errorf("could not locate app/todo.csv starting from %s", cwd)
+}
+
+func (t TodoCsvRepository) CreateTodo(todo *Todo) (*Todo, error) {
+	filePath, err := getCsvFilePath()
+	if err != nil {
+		return nil, err
+	}
 
 	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
@@ -59,13 +100,16 @@ func (t TodoCsvRepository) createTodo(todo *Todo) (*Todo, error) {
 	return todo, nil
 }
 
-func (t TodoCsvRepository) updateTodo(todo *Todo) (*Todo, error) {
+func (t TodoCsvRepository) UpdateTodo(todo *Todo) (*Todo, error) {
 	// Ensure the record exists first
 	if todo == nil || todo.Id == "" {
 		return nil, fmt.Errorf("invalid todo: missing id")
 	}
 
-	filePath := filepath.Join("app", "todo.csv")
+	filePath, err := getCsvFilePath()
+	if err != nil {
+		return nil, err
+	}
 
 	// Open existing file for reading
 	file, err := os.Open(filePath)
@@ -143,8 +187,11 @@ func (t TodoCsvRepository) updateTodo(todo *Todo) (*Todo, error) {
 	return todo, nil
 }
 
-func (t TodoCsvRepository) getTodo(id string) (*Todo, error) {
-	filePath := filepath.Join("app", "todo.csv")
+func (t TodoCsvRepository) GetTodo(id string) (*Todo, error) {
+	filePath, err := getCsvFilePath()
+	if err != nil {
+		return nil, err
+	}
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %w", err)
@@ -186,8 +233,11 @@ func (t TodoCsvRepository) getTodo(id string) (*Todo, error) {
 	return nil, fmt.Errorf("record with ID '%s' not found", id)
 }
 
-func (t TodoCsvRepository) getAllTodos() (*[]Todo, error) {
-	filePath := filepath.Join("app", "todo.csv")
+func (t TodoCsvRepository) GetAllTodos() (*[]Todo, error) {
+	filePath, err := getCsvFilePath()
+	if err != nil {
+		return nil, err
+	}
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %w", err)
@@ -223,13 +273,16 @@ func (t TodoCsvRepository) getAllTodos() (*[]Todo, error) {
 	return &allTodos, nil
 }
 
-func (t TodoCsvRepository) deleteTodo(id string) error {
+func (t TodoCsvRepository) DeleteTodo(id string) error {
 	// Ensure the record exists first
 	if id == "" {
 		return fmt.Errorf("invalid todo: missing id")
 	}
 
-	filePath := filepath.Join("app", "todo.csv")
+	filePath, err := getCsvFilePath()
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
 
 	// Open existing file for reading
 	file, err := os.Open(filePath)

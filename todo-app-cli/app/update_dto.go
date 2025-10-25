@@ -8,5 +8,5 @@ type UpdateTodoDto struct {
 }
 
 func NewUpdateTodoDto(id string, name string, description string, status string) *UpdateTodoDto {
-	return &UpdateTodoDto{Id: id, Name: name, Description: description, Status: TodoStatus(status)}
+	return &UpdateTodoDto{Id: id, Name: name, Description: description, Status: NewTodoStatus(status)}
 }

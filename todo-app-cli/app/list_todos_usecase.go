@@ -13,7 +13,7 @@ func NewListTodosUseCase(repositoryInterface TodoRepositoryInterface) *ListTodos
 }
 
 func (useCase *ListTodosUseCase) Execute() (*[]Todo, error) {
-	todos, err := useCase.todoRepository.getAllTodos()
+	todos, err := useCase.todoRepository.GetAllTodos()
 
 	if err != nil {
 		return nil, fmt.Errorf("could not get todos: %w", err)

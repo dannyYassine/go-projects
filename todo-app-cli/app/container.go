@@ -1,17 +1,47 @@
 package app
 
-import "go.uber.org/dig"
+import (
+	"reflect"
+
+	"go.uber.org/dig"
+)
 
 type container struct {
 	container *dig.Container
+	innerMap  map[string]func() interface{}
 }
 
 var digContainer *dig.Container = dig.New()
 
-var Container = &container{container: digContainer}
+func NewContainer() *container {
+	return &container{container: digContainer, innerMap: make(map[string]func() interface{})}
+}
+
+var Container = NewContainer()
 
 func (c *container) Bind(constructor interface{}) {
-	c.container.Provide(constructor)
+	funcType := reflect.TypeOf(constructor)
+	name := funcType.String()
+
+	c.innerMap[name] = func() interface{} {
+		return constructor
+	}
+}
+
+func (c *container) PartialMock(constructor interface{}) {
+	funcType := reflect.TypeOf(constructor)
+	name := funcType.String()
+
+	c.innerMap[name] = func() interface{} {
+		return constructor
+	}
+}
+
+func (c *container) Build() {
+	for _, value := range c.innerMap {
+		constructor := value()
+		c.container.Provide(constructor)
+	}
 }
 
 func Get[T any]() *T {

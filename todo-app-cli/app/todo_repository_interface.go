@@ -1,9 +1,9 @@
 package app
 
 type TodoRepositoryInterface interface {
-	createTodo(todo *Todo) (*Todo, error)
-	updateTodo(todo *Todo) (*Todo, error)
-	getTodo(id string) (*Todo, error)
-	getAllTodos() (*[]Todo, error)
-	deleteTodo(id string) error
+	CreateTodo(todo *Todo) (*Todo, error)
+	UpdateTodo(todo *Todo) (*Todo, error)
+	GetTodo(id string) (*Todo, error)
+	GetAllTodos() (*[]Todo, error)
+	DeleteTodo(id string) error
 }

@@ -15,7 +15,7 @@ func NewCreateTodoUseCase(repositoryInterface TodoRepositoryInterface) *CreateTo
 func (useCase *CreateTodoUseCase) Execute(dto *CreateTodoDto) (*Todo, error) {
 	todo := Todo{Name: dto.Name, Description: dto.Description, Status: dto.Status}
 
-	savedTodo, err := useCase.todoRepository.createTodo(&todo)
+	savedTodo, err := useCase.todoRepository.CreateTodo(&todo)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not create todo: %w", err)

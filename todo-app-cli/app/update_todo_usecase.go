@@ -13,7 +13,7 @@ func NewUpdateTodoUseCase(repositoryInterface TodoRepositoryInterface) *UpdateTo
 }
 
 func (useCase *UpdateTodoUseCase) Execute(dto *UpdateTodoDto) (*Todo, error) {
-	savedTodo, err := useCase.todoRepository.getTodo(dto.Id)
+	savedTodo, err := useCase.todoRepository.GetTodo(dto.Id)
 
 	if err != nil {
 		return nil, fmt.Errorf("Could not get todo: %w", err)
@@ -29,7 +29,7 @@ func (useCase *UpdateTodoUseCase) Execute(dto *UpdateTodoDto) (*Todo, error) {
 		savedTodo.Status = dto.Status
 	}
 
-	newTodo, err := useCase.todoRepository.updateTodo(savedTodo)
+	newTodo, err := useCase.todoRepository.UpdateTodo(savedTodo)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not create todo: %w", err)

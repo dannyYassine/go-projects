@@ -8,6 +8,19 @@ const (
 	Completed  TodoStatus = "completed"
 )
 
+func NewTodoStatus(status string) TodoStatus {
+	switch TodoStatus(status) {
+	case New:
+		return New
+	case InProgress:
+		return InProgress
+	case Completed:
+		return Completed
+	}
+
+	panic("invalid status")
+}
+
 func (status TodoStatus) PrettyPrintString() string {
 	switch status {
 	case New:

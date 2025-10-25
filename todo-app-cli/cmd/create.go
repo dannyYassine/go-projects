@@ -18,37 +18,32 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("create called")
 		name, _ := cmd.Flags().GetString("name")
+		description, _ := cmd.Flags().GetString("description")
 
 		if name == "" {
 			fmt.Println("name is required")
 			return
 		}
 
-		dto := app.NewCreateTodoDto(name)
-		todo, err := app.NewCreateTodoUseCase().Execute(dto)
+		dto := app.NewCreateTodoDto(name, description)
+
+		useCase := app.Get[app.CreateTodoUseCase]()
+
+		todo, err := useCase.Execute(dto)
 
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Println(todo)
+		renderer := app.Get[app.ConsoleRenderer]()
+		renderer.PrintTodo(todo)
 	},
 }
 
 func init() {
 	createCmd.Flags().String("name", "", "name of todo")
+	createCmd.Flags().String("description", "", "small description (optional)")
 	rootCmd.AddCommand(createCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

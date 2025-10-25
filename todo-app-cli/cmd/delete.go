@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"todo-app-cli/app"
 
 	"github.com/spf13/cobra"
 )
@@ -20,11 +21,23 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("delete called")
+		id, _ := cmd.Flags().GetString("id")
+		useCase := app.Get[app.DeleteTodoUseCase]()
+
+		dto := app.NewDeleteTodoDto(id)
+		err := useCase.Execute(dto)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Println("todo deleted")
 	},
 }
 
 func init() {
+	deleteCmd.Flags().String("id", "", "id of the todo")
 	rootCmd.AddCommand(deleteCmd)
 
 	// Here you will define your flags and configuration settings.

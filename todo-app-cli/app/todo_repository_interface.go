@@ -5,5 +5,5 @@ type TodoRepositoryInterface interface {
 	updateTodo(todo *Todo) (*Todo, error)
 	getTodo(id string) (*Todo, error)
 	getAllTodos() (*[]Todo, error)
-	deleteTodo(id int) error
+	deleteTodo(id string) error
 }

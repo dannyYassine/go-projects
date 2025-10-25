@@ -6,6 +6,6 @@ type CreateTodoDto struct {
 	Status      TodoStatus
 }
 
-func NewCreateTodoDto(name string) *CreateTodoDto {
-	return &CreateTodoDto{Name: name, Status: New}
+func NewCreateTodoDto(name string, description string) *CreateTodoDto {
+	return &CreateTodoDto{Name: name, Description: description, Status: New}
 }

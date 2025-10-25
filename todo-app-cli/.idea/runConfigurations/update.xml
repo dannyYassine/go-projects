@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="update" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="todo-app-cli" />
+    <working_directory value="$PROJECT_DIR$" />
+    <parameters value="update --id c8e908a9-73cc-430f-a044-de7fcd783e71 --name Sachin2" />
+    <kind value="PACKAGE" />
+    <package value="todo-app-cli" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$/main.go" />
+    <method v="2" />
+  </configuration>
+</component>

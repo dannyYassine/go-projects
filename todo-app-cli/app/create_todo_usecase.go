@@ -6,16 +6,16 @@ type CreateTodoUseCase struct {
 	todoRepository TodoRepositoryInterface
 }
 
-func NewCreateTodoUseCase() *CreateTodoUseCase {
+func NewCreateTodoUseCase(repositoryInterface TodoRepositoryInterface) *CreateTodoUseCase {
 	return &CreateTodoUseCase{
-		todoRepository: NewTodoCsvRepository(),
+		todoRepository: repositoryInterface,
 	}
 }
 
 func (useCase *CreateTodoUseCase) Execute(dto *CreateTodoDto) (*Todo, error) {
-	todo := &Todo{Name: dto.Name}
+	todo := Todo{Name: dto.Name, Description: dto.Description, Status: dto.Status}
 
-	savedTodo, err := useCase.todoRepository.createTodo(todo)
+	savedTodo, err := useCase.todoRepository.createTodo(&todo)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not create todo: %w", err)

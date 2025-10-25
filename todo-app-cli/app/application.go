@@ -6,6 +6,13 @@ type application struct {
 
 var Application = &application{Container: Container}
 
+func (application *application) Bootstrap() *application {
+	application.Register()
+	application.Boot()
+
+	return application
+}
+
 func (application *application) Register() *application {
 	application.Container.Bind(NewCreateTodoUseCase)
 	application.Container.Bind(NewUpdateTodoUseCase)
@@ -17,6 +24,6 @@ func (application *application) Register() *application {
 	return application
 }
 
-func (application *application) Boot() {
-	application.Container.Build()
+func (application *application) Boot() *application {
+	return application
 }

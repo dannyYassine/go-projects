@@ -7,8 +7,9 @@ import (
 )
 
 type container struct {
-	container *dig.Container
-	innerMap  map[string]func() interface{}
+	container   *dig.Container
+	innerMap    map[string]func() interface{}
+	initialized bool
 }
 
 var digContainer *dig.Container = dig.New()
@@ -45,6 +46,11 @@ func (c *container) Build() {
 }
 
 func Get[T any]() *T {
+	if !Container.initialized {
+		Container.Build()
+		Container.initialized = true
+	}
+
 	var u *T
 	Container.container.Invoke(func(t *T) error {
 		u = t

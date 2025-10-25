@@ -10,7 +10,7 @@ import (
 )
 
 func TestCreateTodoUseCaseCreatesTodo(t *testing.T) {
-	app.Application.Register().Boot()
+	app.Application.Bootstrap()
 
 	dto := app.NewCreateTodoDto("name", "test")
 
@@ -26,7 +26,7 @@ func TestCreateTodoUseCaseCreatesTodo(t *testing.T) {
 }
 
 func TestCreateTodoUseCaseCreatesTodoMocked(t *testing.T) {
-	app.Application.Register()
+	app.Application.Bootstrap()
 	mocked := new(MyMockedObject)
 	dto := app.NewCreateTodoDto("name", "test")
 
@@ -36,7 +36,6 @@ func TestCreateTodoUseCaseCreatesTodoMocked(t *testing.T) {
 	app.Application.Container.PartialMock(func() app.TodoRepositoryInterface {
 		return mocked
 	})
-	app.Application.Boot()
 
 	useCase := app.Get[app.CreateTodoUseCase]()
 	todo, err := useCase.Execute(dto)

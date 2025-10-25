@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	app.Application.Register().Boot()
+	app.Application.Bootstrap()
 
 	cmd.Execute()
 }

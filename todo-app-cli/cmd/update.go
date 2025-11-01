@@ -33,7 +33,7 @@ to quickly create a Cobra application.`,
 
 		dto := app.NewUpdateTodoDto(id, name, description, status)
 
-		useCase := app.Get[app.UpdateTodoUseCase]()
+		useCase := app.Get[app.UpdateTodoUseCase](application)
 
 		todo, err := useCase.Execute(dto)
 
@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		renderer := app.Get[app.ConsoleRenderer]()
+		renderer := app.Get[app.ConsoleRenderer](application)
 		renderer.PrintTodo(todo)
 	},
 }

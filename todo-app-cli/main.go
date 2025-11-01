@@ -9,7 +9,9 @@ import (
 )
 
 func main() {
-	app.Application.Bootstrap()
+	application := app.NewApplication()
+	application.Bootstrap()
 
+	cmd.SetApplication(application)
 	cmd.Execute()
 }

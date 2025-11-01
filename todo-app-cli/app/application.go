@@ -4,8 +4,6 @@ type Application struct {
 	Container *Container
 }
 
-//var Application = &application{Container: Container}
-
 func NewApplication() *Application {
 	return &Application{NewContainer()}
 }
@@ -39,10 +37,14 @@ func (application *Application) Shutdown() *Application {
 }
 
 func Get[T any](application *Application) *T {
-	if !application.Container.initialized {
-		application.Container.Build()
-		application.Container.initialized = true
+	if application == nil {
+		panic("app.Get: application is nil")
 	}
+	if application.Container == nil {
+		panic("app.Get: application container is nil; was Application.Shutdown() called?")
+	}
+
+	application.Container.EnsureBuilt()
 
 	var u *T
 	err := application.Container.container.Invoke(func(t *T) error {

@@ -2,14 +2,15 @@ package app
 
 import (
 	"reflect"
+	"sync"
 
 	"go.uber.org/dig"
 )
 
 type Container struct {
-	container   *dig.Container
-	innerMap    map[string]func() interface{}
-	initialized bool
+	container *dig.Container
+	innerMap  map[string]func() interface{}
+	once      sync.Once
 }
 
 func NewContainer() *Container {
@@ -32,6 +33,12 @@ func (c *Container) PartialMock(constructor interface{}) {
 	c.innerMap[name] = func() interface{} {
 		return constructor
 	}
+}
+
+func (c *Container) EnsureBuilt() {
+	c.once.Do(func() {
+		c.Build()
+	})
 }
 
 func (c *Container) Build() {

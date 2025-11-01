@@ -5,9 +5,16 @@ package cmd
 
 import (
 	"os"
+	"todo-app-cli/app"
 
 	"github.com/spf13/cobra"
 )
+
+var application *app.Application
+
+func SetApplication(a *app.Application) {
+	application = a
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

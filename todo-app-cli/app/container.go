@@ -6,21 +6,17 @@ import (
 	"go.uber.org/dig"
 )
 
-type container struct {
+type Container struct {
 	container   *dig.Container
 	innerMap    map[string]func() interface{}
 	initialized bool
 }
 
-var digContainer *dig.Container = dig.New()
-
-func NewContainer() *container {
-	return &container{container: digContainer, innerMap: make(map[string]func() interface{})}
+func NewContainer() *Container {
+	return &Container{container: dig.New(), innerMap: make(map[string]func() interface{})}
 }
 
-var Container = NewContainer()
-
-func (c *container) Bind(constructor interface{}) {
+func (c *Container) Bind(constructor interface{}) {
 	funcType := reflect.TypeOf(constructor)
 	name := funcType.String()
 
@@ -29,7 +25,7 @@ func (c *container) Bind(constructor interface{}) {
 	}
 }
 
-func (c *container) PartialMock(constructor interface{}) {
+func (c *Container) PartialMock(constructor interface{}) {
 	funcType := reflect.TypeOf(constructor)
 	name := funcType.String()
 
@@ -38,23 +34,13 @@ func (c *container) PartialMock(constructor interface{}) {
 	}
 }
 
-func (c *container) Build() {
+func (c *Container) Build() {
 	for _, value := range c.innerMap {
 		constructor := value()
-		c.container.Provide(constructor)
-	}
-}
+		err := c.container.Provide(constructor)
 
-func Get[T any]() *T {
-	if !Container.initialized {
-		Container.Build()
-		Container.initialized = true
+		if err != nil {
+			panic(err)
+		}
 	}
-
-	var u *T
-	Container.container.Invoke(func(t *T) error {
-		u = t
-		return nil
-	})
-	return u
 }

@@ -20,6 +20,11 @@ func AssertCsvContainsTodo(t *testing.T, todo *app.Todo) {
 	assert.Contains(t, fileContent, todo.Id)
 }
 
+func AssertCsvNotContainsTodo(t *testing.T, todo *app.Todo) {
+	fileContent := loadFile()
+	assert.NotContains(t, fileContent, todo.Id)
+}
+
 func loadFile() string {
 	filePath := "../todo.csv"
 

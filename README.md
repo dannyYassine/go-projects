@@ -6,7 +6,8 @@ Repo with go projects
 * https://devhints.io/go
 
 ## Packages
-
+* https://gorm.io
+* 
 ### Development
 * [air](https://github.com/air-verse/air): Live reload for Go apps
 

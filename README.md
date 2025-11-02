@@ -1,6 +1,10 @@
 # go-projects
 Repo with go projects
 
+## Cheatsheets
+
+* https://devhints.io/go
+
 ## Packages
 
 ### Development

@@ -10,27 +10,30 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func setUpFunctionalTest(_ *testing.T) (*app.Application, func(t *testing.T)) {
+func setUpFunctionalTest(t *testing.T) *app.Application {
 	application := app.NewApplication()
 	application.Bootstrap()
 
-	return application, func(t *testing.T) {
+	t.Cleanup(func() {
 		application.Shutdown()
-	}
+	})
+
+	return application
 }
 
-func setUpIntegrationTest(_ *testing.T) (*app.Application, func(t *testing.T)) {
+func setUpIntegrationTest(t *testing.T) *app.Application {
 	application := app.NewApplication()
 	application.Bootstrap()
 
-	return application, func(t *testing.T) {
+	t.Cleanup(func() {
 		application.Shutdown()
-	}
+	})
+
+	return application
 }
 
 func Test_CreateTodoUseCase_CreatesTodo(t *testing.T) {
-	application, suite := setUpFunctionalTest(t)
-	defer suite(t)
+	application := setUpFunctionalTest(t)
 
 	dto := app.NewCreateTodoDto("name", "test")
 
@@ -46,8 +49,7 @@ func Test_CreateTodoUseCase_CreatesTodo(t *testing.T) {
 }
 
 func Test_CreateTodoUseCase_CreatesTodoMocked(t *testing.T) {
-	application, suite := setUpFunctionalTest(t)
-	defer suite(t)
+	application := setUpFunctionalTest(t)
 
 	dto := app.NewCreateTodoDto("name", "test")
 
@@ -75,8 +77,7 @@ func Test_CreateTodoUseCase_CreatesTodoMocked(t *testing.T) {
 }
 
 func Test_CreateTodoUseCase_HandlesError(t *testing.T) {
-	application, suite := setUpIntegrationTest(t)
-	defer suite(t)
+	application := setUpIntegrationTest(t)
 
 	dto := app.NewCreateTodoDto("name", "test")
 
